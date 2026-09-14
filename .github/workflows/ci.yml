@@ -24,7 +24,7 @@ jobs:
     env:
       HOME: /tmp/kicad-home
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: kicad-cli version
         run: kicad-cli version
