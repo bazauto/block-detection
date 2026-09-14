@@ -1,0 +1,10 @@
+(sym_lib_table
+	(version 7)
+	(lib
+		(name "bazauto-block-detection")
+		(type "KiCad")
+		(uri "${KIPRJMOD}/bazauto-block-detection.kicad_sym")
+		(options "")
+		(descr "Project symbols (ordered TI parts)")
+	)
+)

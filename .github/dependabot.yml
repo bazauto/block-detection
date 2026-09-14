@@ -1,0 +1,19 @@
+version: 2
+
+updates:
+  # GitHub Actions used by .github/workflows/ci.yml. Pinned major tags go stale
+  # quietly: a deprecated runner image or action version fails CI on an unrelated
+  # PR, which is the worst time to find out.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+# No other ecosystem entry. The scripts use only the Python standard library plus
+# KiCad's bundled pcbnew, and the KiCad container image is pinned by hand in ci.yml.

@@ -1,0 +1,22 @@
+# PCBWay order paperwork: invoices, quotations and order files carry personal and
+# payment details, and the board photos belong with the order. Kept locally, never pushed.
+PCBWay/
+
+# KiCad local state and backups
+*-backups/
+*.kicad_prl
+*.lck
+fp-info-cache
+_autosave-*
+\#auto_saved_files#
+
+# Other tool state
+.fasteda/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+Thumbs.db
+.DS_Store
