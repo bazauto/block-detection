@@ -34,8 +34,9 @@ been measured on hardware yet.
 | `bazauto-block-detection.kicad_sch` | Schematic (KiCad 10 format) |
 | `bazauto-block-detection.kicad_pcb` | 2-layer PCB, fully routed |
 | `bazauto-block-detection.kicad_sym` | Project symbols: `TLV9002IDGKR`, `TLV3212IDGKR` |
-| `sym-lib-table` / `fp-lib-table` | Library tables (project-local symbols, ProtoFlow footprints) |
+| `sym-lib-table` | Project symbol library table. There is no project footprint table: every footprint comes from the stock KiCad libraries and is stored in the board file |
 | `bom.csv` | Bill of materials, grouped |
+| `fab/rev-1.0/` | **Revision 1.0 as sent to fab**: Gerbers, drill files, Gerber job file, position file, the zipped Gerber set, and `SOURCE.txt` fingerprinting the board they came from. See [Fabrication revisions](#fabrication-revisions) |
 | `BOM_PCBWay_bazauto-block-detection.xlsx` | **Not in the repo.** `bom.csv` poured into PCBWay's template, ready to upload. Generate it locally; see [Regenerating](#regenerating) |
 | `scripts/` | Generators and checkers — see [Regenerating](#regenerating) |
 
@@ -207,6 +208,35 @@ silkscreen survive; it only rebuilds tracks, vias and zones.
 | `check_board.py` | Courtyard overlaps, off-board parts, board nets vs. schematic |
 | `check_plane.py` | Bottom-layer voids and which analog nets cross them |
 | `make_pcbway_bom.py` | Fills PCBWay's BOM template; fails if it has drifted from `bom.csv`. Needs PCBWay's sample BOM template saved locally as `Sample_BOM_PCBWay.xlsx`. It's PCBWay's file, so it isn't committed, and neither is the output. |
+| `check_fab_outputs.py` | Checks the newest `fab/rev-X.Y/` against the board it was generated from; `--record` writes that revision's `SOURCE.txt`. Plain Python, needs `kicad-cli` on PATH or `KICAD_CLI` set |
+
+---
+
+## Fabrication revisions
+
+Each set of files sent to a board house lives in its own `fab/rev-X.Y/` folder
+and is never regenerated in place, so the repo always holds exactly what a
+revision was. Each revision is also tagged in git (`rev-1.0`).
+
+`fab/rev-X.Y/SOURCE.txt` records the SHA-256 of the board file (line endings
+normalised) that its outputs came from. CI runs `scripts/check_fab_outputs.py`:
+
+- **Board unchanged since the newest revision:** it regenerates the outputs and
+  fails if the committed ones differ. That catches Gerbers left stale after a
+  board edit, and a zip that disagrees with the loose files. Gerbers are compared
+  by the geometry they draw, because KiCad doesn't write primitives in a stable
+  order.
+- **Board changed:** work on the next revision is under way. It reports a notice
+  and passes.
+
+To cut a new revision, for example 1.1:
+
+1. Plot Gerbers, drill files (Excellon, PTH and NPTH separate) and the position
+   file (CSV, mm, both sides) into `fab/rev-1.1/`, and zip the Gerbers, the
+   Gerber job file and the drill files as `bazauto-block-detection.zip` there.
+2. `python scripts/check_fab_outputs.py --record rev-1.1`
+3. `python scripts/check_fab_outputs.py`, which must report all outputs matching.
+4. Land it through a PR, then tag the merge commit `rev-1.1`.
 
 ---
 
@@ -222,14 +252,14 @@ check_board.py               37 footprints, 0 problems (no overlaps, nets match 
 check_plane.py               8.60 mm bottom-layer track; 4 analog crossings (see above)
 ```
 
-CI re-runs the two `kicad-cli` checks on every pull request (see
-`.github/workflows/ci.yml`). DRC there runs with `--schematic-parity` at error
+CI re-runs the two `kicad-cli` checks and `check_fab_outputs.py` on every pull
+request (see `.github/workflows/ci.yml`). DRC there runs with `--schematic-parity` at error
 severity. At warning severity the parity check reports 80 cosmetic mismatches:
 footprints saved without their library prefix, and field text such as a
 Datasheet of `''` against `~`. None is a net or connection mismatch.
 
-Gerbers and drill files for revision 1.0 are in the project root, with the same
-set zipped as `bazauto-block-detection.zip`. Nothing has been measured on
+Gerbers and drill files for revision 1.0 are in `fab/rev-1.0/`, and regenerating
+them from the current board reproduces them exactly. Nothing has been measured on
 hardware yet. The threshold-resolution concern above is analysis, not a bench
 result.
 

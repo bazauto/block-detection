@@ -1,0 +1,5 @@
+# Written by scripts/check_fab_outputs.py --record. The board these outputs were generated from.
+revision: rev-1.0
+board: bazauto-block-detection.kicad_pcb
+board-sha256: 12511c33472136182fb6441b539b06f3d46b0735f5b1031a3cbfed8e0d8f5f05
+generated-with: KiCad 10.0.5

@@ -55,3 +55,8 @@ jobs:
           kicad-cli pcb drc --exit-code-violations --schematic-parity --severity-error
           -o drc.rpt bazauto-block-detection.kicad_pcb
           || { cat drc.rpt; exit 1; }
+
+      # The newest fab/rev-X.Y/ must match the board it records in SOURCE.txt. If the board has
+      # moved on since, this reports a notice and passes. See README "Fabrication revisions".
+      - name: Fabrication outputs match the board
+        run: python3 scripts/check_fab_outputs.py
