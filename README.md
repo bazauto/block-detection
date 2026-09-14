@@ -36,7 +36,7 @@ been measured on hardware yet.
 | `bazauto-block-detection.kicad_sym` | Project symbols: `TLV9002IDGKR`, `TLV3212IDGKR` |
 | `sym-lib-table` / `fp-lib-table` | Library tables (project-local symbols, ProtoFlow footprints) |
 | `bom.csv` | Bill of materials, grouped |
-| `BOM_PCBWay_bazauto-block-detection.xlsx` | `bom.csv` poured into PCBWay's template, ready to upload |
+| `BOM_PCBWay_bazauto-block-detection.xlsx` | **Not in the repo.** `bom.csv` poured into PCBWay's template, ready to upload. Generate it locally; see [Regenerating](#regenerating) |
 | `scripts/` | Generators and checkers — see [Regenerating](#regenerating) |
 
 Everything else (resistors, caps, diodes, connectors, trimmers) comes from the
@@ -206,7 +206,7 @@ silkscreen survive; it only rebuilds tracks, vias and zones.
 | `route_pcb.py` | Routing, ground pours, silkscreen legends |
 | `check_board.py` | Courtyard overlaps, off-board parts, board nets vs. schematic |
 | `check_plane.py` | Bottom-layer voids and which analog nets cross them |
-| `make_pcbway_bom.py` | Fills PCBWay's BOM template; fails if it has drifted from `bom.csv` |
+| `make_pcbway_bom.py` | Fills PCBWay's BOM template; fails if it has drifted from `bom.csv`. Needs PCBWay's sample BOM template saved locally as `Sample_BOM_PCBWay.xlsx`. It's PCBWay's file, so it isn't committed, and neither is the output. |
 
 ---
 
@@ -232,3 +232,19 @@ Gerbers and drill files for revision 1.0 are in the project root, with the same
 set zipped as `bazauto-block-detection.zip`. Nothing has been measured on
 hardware yet. The threshold-resolution concern above is analysis, not a bench
 result.
+
+---
+
+## Licence
+
+Copyright © 2026 Paul Barrett.
+
+| Material | Licence |
+|---|---|
+| **The hardware design**: schematic, board, project symbol library, BOM, Gerbers and drill files, and the enclosure model (`enclosure/`, except `check_fit.py`) | [CERN-OHL-P-2.0](LICENSE) |
+| **Software**: everything in `scripts/`, and `enclosure/check_fit.py` | [MIT](LICENSE-MIT) |
+
+Source location: <https://github.com/bazauto/block-detection>
+
+Third-party material, notably the KiCad library symbols the project symbols are
+derived from, is listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

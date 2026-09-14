@@ -2,6 +2,11 @@
 # payment details, and the board photos belong with the order. Kept locally, never pushed.
 PCBWay/
 
+# PCBWay's BOM template is PCBWay's file, with no licence to redistribute it, and the
+# upload BOM is generated from it. Both stay local; bom.csv is the source of truth.
+Sample_BOM_PCBWay.xlsx
+BOM_PCBWay_*.xlsx
+
 # KiCad local state and backups
 *-backups/
 *.kicad_prl
